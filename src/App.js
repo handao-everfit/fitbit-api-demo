@@ -23,6 +23,10 @@ function App() {
     xhr.onload = function () {
       if (xhr.status === 200) {
         console.log(xhr.responseText);
+        setHeartData(null);
+        setSleepData(null);
+        setStepData(null);
+        setWaterData(null);
       }
     };
     xhr.send(params);
@@ -101,7 +105,7 @@ function App() {
             });
         }
       });
-  }, []);
+  }, [access_token, userId]);
   // console.log(Object.values(data)[0]);
   // if (data) console.log(data[0].value.heartRateZones);
   // if (heartData) console.table(heartData[0].value.heartRateZones);
@@ -122,7 +126,7 @@ function App() {
       {heartData &&
         heartData.map((item) => (
           <div>
-            <h4>{item.dateTime}</h4>
+            <h2>{item.dateTime}</h2>
             <HeartDataTable data={item.value.heartRateZones} />
           </div>
         ))}

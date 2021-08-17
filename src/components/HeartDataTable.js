@@ -10,7 +10,10 @@ import Paper from "@material-ui/core/Paper";
 
 const useStyles = makeStyles({
   table: {
-    minWidth: 650,
+    minWidth: 500,
+    maxWidth: 800,
+    margin: "30px",
+    border: "1px solid",
   },
 });
 
@@ -19,8 +22,9 @@ export default function HeartDataTable({ data }) {
 
   return (
     <TableContainer component={Paper}>
-      <h3>Heart Rate Log</h3>
       <Table className={classes.table} aria-label='simple table'>
+        <caption>Heart Rate Log</caption>
+
         <TableHead>
           <TableRow>
             <TableCell>Heart Rate Zone</TableCell>
