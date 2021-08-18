@@ -8,7 +8,7 @@ export const userSlice = createSlice({
     status: "idle",
     userId: "",
     access_token: "",
-    fitbitData: null,
+    data: null,
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -18,10 +18,11 @@ export const userSlice = createSlice({
       })
       .addCase(login.fulfilled, (state, action) => {
         if (action.payload.length) {
-          state.user = action.payload[0];
+          // state.user = action.payload[0];
           console.log(action.payload[0]);
           state.user.isLogged = true;
           // state.user.fitbitData = true;
+          state.user.data = action.payload;
         } else {
           state.user = null;
         }

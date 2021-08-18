@@ -4,15 +4,19 @@ import { useEffect, useState } from "react";
 import HeartDataTable from "./components/HeartDataTable";
 import DataTable from "./components/DataTable";
 import { login } from "./redux/user/userAsyncActions";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { selectorData, selectorIsLogged } from "./redux/user/userSelector";
 
 function App() {
   const dispatch = useDispatch();
 
-  const [heartData, setHeartData] = useState(null);
-  const [sleepData, setSleepData] = useState(null);
-  const [stepData, setStepData] = useState(null);
-  const [waterData, setWaterData] = useState(null);
+  // const [heartData, setHeartData] = useState(null);
+  // const [sleepData, setSleepData] = useState(null);
+  // const [stepData, setStepData] = useState(null);
+  // const [waterData, setWaterData] = useState(null);
+
+  const { heartData, sleepData, stepData, waterData } =
+    useSelector(selectorData);
 
   function revokeAccess() {
     // get the url
@@ -37,10 +41,10 @@ function App() {
     xhr.onload = function () {
       if (xhr.status === 200) {
         console.log(xhr.responseText);
-        setHeartData(null);
-        setSleepData(null);
-        setStepData(null);
-        setWaterData(null);
+        // setHeartData(null);
+        // setSleepData(null);
+        // setStepData(null);
+        // setWaterData(null);
       }
     };
     xhr.send(params);
@@ -116,14 +120,24 @@ function App() {
   // if (sleepData) console.table(sleepData);
   // if (stepData) console.log(Object.entries(stepData)[0][1][0]);
 
-  function handleLogin(e) {
-    e.preventDefault();
-    // get the url
-    window.location.href =
-      "https://www.fitbit.com/oauth2/authorize?response_type=token&client_id=23B77Y&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fhome&scope=activity%20heartrate%20location%20nutrition%20profile%20settings%20sleep%20social%20weight&expires_in=604800";
-    var url = window.location.href;
-    e.preventDefault();
+  function redirect(url) {
+    return new Promise((resolve, reject) => {
+      window.location.href = url;
+      if (window.location.href === url) {
+        resolve();
+      } else {
+        reject("Something went wrong!");
+      }
+    });
+  }
 
+  async function handleLogin(e) {
+    e.preventDefault();
+    await redirect(
+      "https://www.fitbit.com/oauth2/authorize?response_type=token&client_id=23B77Y&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2F&scope=activity%20heartrate%20location%20nutrition%20profile%20settings%20sleep%20social%20weight&expires_in=604800"
+    );
+    // get the url
+    var url = window.location.href;
     console.log(window.location.href);
     //getting the access token from url
     var access_token = url.split("#")[1].split("=")[1].split("&")[0];
