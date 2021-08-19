@@ -1,20 +1,41 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-// All actions with API or Async/Await
-// export const login = createAsyncThunk("login", async (params) => {
-//   const { username, password } = params;
-//   try {
-//     const response = await axios.get(
-//       `http://localhost:3000/users?username=${username}&password=${password}`
-//     );
-//     return response.data;
-//   } catch (error) {
-//     return error;
-//   }
-// });
+function redirect(url) {
+  return new Promise((resolve, reject) => {
+    window.location.replace(url);
+    console.log(window.location.href);
+    if (window.location.href.includes("access_token")) {
+      resolve();
+    } else {
+      reject("Something went wrong!");
+    }
+  });
+}
 
-export const login = createAsyncThunk("login", async (params) => {
+// All actions with API or Async/Await
+export const login = createAsyncThunk("login", async (payload, params) => {
+  // const { username, password } = params;
+  try {
+    await redirect(
+      "https://www.fitbit.com/oauth2/authorize?response_type=token&client_id=23B77Y&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2F&scope=activity%20heartrate%20location%20nutrition%20profile%20settings%20sleep%20social%20weight&expires_in=604800"
+    );
+    // get the url
+    var url = window.location.href;
+    console.log(window.location.href);
+    //getting the access token from url
+    var access_token = url.split("#")[1].split("=")[1].split("&")[0];
+    //get the userid
+    var userId = url.split("#")[1].split("=")[2].split("&")[0];
+    console.log("access token " + access_token);
+    console.log("userId: " + userId);
+    return { access_token, userId };
+  } catch (error) {
+    return error;
+  }
+});
+
+export const fetchData = createAsyncThunk("fetchData", async (params) => {
   const { access_token, userId } = params;
 
   const headers = {
@@ -87,17 +108,26 @@ export const login = createAsyncThunk("login", async (params) => {
     });
 });
 
-export const register = createAsyncThunk("register", async (params) => {
-  try {
-    const response = await axios.post(`http://localhost:3000/users`, {
-      ...params,
-    });
-    return response.data;
-  } catch (error) {
-    return error;
-  }
-});
+export const revokeAccess = createAsyncThunk("revokeAccess", async (params) => {
+  const { access_token } = params;
 
-export const logout = createAsyncThunk("logout", async () => {
-  return null;
+  var p = "token=" + access_token;
+  var xhr = new XMLHttpRequest();
+  xhr.open("POST", "https://api.fitbit.com/oauth2/revoke");
+  xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+  xhr.setRequestHeader(
+    "Authorization",
+    "Basic MjNCNzdZOjQ0ZWI1NWE5NzhjZWQ1NWI3MzdmYjY2MTNkYjk5ZTg4",
+    true
+  );
+  xhr.onload = function () {
+    if (xhr.status === 200) {
+      console.log(xhr.responseText);
+      // setHeartData(null);
+      // setSleepData(null);
+      // setStepData(null);
+      // setWaterData(null);
+    }
+  };
+  xhr.send(p);
 });
