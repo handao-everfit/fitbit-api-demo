@@ -20,17 +20,17 @@ export const login = createAsyncThunk("login", async (payload, params) => {
     await redirect(
       "https://www.fitbit.com/oauth2/authorize?response_type=token&client_id=23B77Y&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fhome&scope=activity%20heartrate%20location%20nutrition%20profile%20settings%20sleep%20social%20weight&expires_in=604800"
     );
-    // // get the url
-    // var url = window.location.href;
+    // get the url
+    var url = window.location.href;
 
-    // console.log(window.location.href);
-    // //getting the access token from url
-    // var access_token = url.split("#")[1].split("=")[1].split("&")[0];
-    // //get the userid
-    // var userId = url.split("#")[1].split("=")[2].split("&")[0];
-    // console.log("access token " + access_token);
-    // console.log("userId: " + userId);
-    return;
+    console.log(window.location.href);
+    //getting the access token from url
+    var access_token = url.split("#")[1].split("=")[1].split("&")[0];
+    //get the userid
+    var userId = url.split("#")[1].split("=")[2].split("&")[0];
+    console.log("access token " + access_token);
+    console.log("userId: " + userId);
+    return { access_token, userId };
   } catch (error) {
     return error;
   }
@@ -86,33 +86,56 @@ export const fetchData = createAsyncThunk("fetchData", async (params) => {
     //       // setWaterData(Object.entries(water.data)[0][1][0]);
     //     };
     //   })
-    // );
-    return response;
+    //
+    let data = [];
+    response.forEach((res) => {
+      data.push(res.data);
+    });
+    return data;
   } catch (error) {
     return error;
   }
 });
 
 export const revokeAccess = createAsyncThunk("revokeAccess", async (params) => {
-  const { access_token } = params;
+  try {
+    var url = window.location.href;
+    console.log(window.location.href);
+    //getting the access token from url
+    var access_token = url.split("#")[1].split("=")[1].split("&")[0];
+    var p = "token=" + access_token;
+    // const headers = {
+    //   "Content-Type": "application/x-www-form-urlencoded",
+    //   Authorization:
+    //     "Basic MjNCNzdZOjQ0ZWI1NWE5NzhjZWQ1NWI3MzdmYjY2MTNkYjk5ZTg4",
+    // };
 
-  var p = "token=" + access_token;
-  var xhr = new XMLHttpRequest();
-  xhr.open("POST", "https://api.fitbit.com/oauth2/revoke");
-  xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-  xhr.setRequestHeader(
-    "Authorization",
-    "Basic MjNCNzdZOjQ0ZWI1NWE5NzhjZWQ1NWI3MzdmYjY2MTNkYjk5ZTg4",
-    true
-  );
-  xhr.onload = function () {
-    if (xhr.status === 200) {
-      console.log(xhr.responseText);
-      // setHeartData(null);
-      // setSleepData(null);
-      // setStepData(null);
-      // setWaterData(null);
-    }
-  };
-  xhr.send(p);
+    // const response = await axios.post("https://api.fitbit.com/oauth2/revoke", {
+    //   ...p,
+    //   headers: headers,
+    // });
+    // return response.status;
+
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "https://api.fitbit.com/oauth2/revoke");
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xhr.setRequestHeader(
+      "Authorization",
+      "Basic MjNCNzdZOjQ0ZWI1NWE5NzhjZWQ1NWI3MzdmYjY2MTNkYjk5ZTg4",
+      true
+    );
+    xhr.onload = function () {
+      if (xhr.status === 200) {
+        console.log(xhr.responseText);
+        // setHeartData(null);
+        // setSleepData(null);
+        // setStepData(null);
+        // setWaterData(null);
+      }
+    };
+    xhr.send(p);
+    return xhr.status;
+  } catch (error) {
+    return error;
+  }
 });

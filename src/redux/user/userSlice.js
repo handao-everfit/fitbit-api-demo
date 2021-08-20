@@ -4,7 +4,7 @@ import { fetchData, login, revokeAccess } from "./userAsyncActions";
 export const userSlice = createSlice({
   name: "user",
   initialState: {
-    user: null,
+    isLogged: false,
     status: "idle",
     userId: "",
     access_token: "",
@@ -21,8 +21,6 @@ export const userSlice = createSlice({
         //action.payload is undefined
         if (action.payload) {
           state.data = action.payload;
-        } else {
-          state.user = null;
         }
         state.status = "idle";
       });
@@ -32,6 +30,11 @@ export const userSlice = createSlice({
         state.status = "loading";
       })
       .addCase(login.fulfilled, (state, action) => {
+        if (action.payload) {
+          state.isLogged = true;
+        }
+        state.status = "idle";
+
         // console.log("Payload", action.payload);
 
         // if (action.payload) {
@@ -41,15 +44,15 @@ export const userSlice = createSlice({
         // } else {
         //   state.user = null;
         // }
-        state.status = "idle";
       });
 
     builder
       .addCase(revokeAccess.pending, (state) => {
         state.status = "loading";
       })
-      .addCase(revokeAccess.fulfilled, (state, action) => {
-        state.user = action.payload;
+      .addCase(revokeAccess.fulfilled, (state) => {
+        // console.log("response", action.payload);
+        state.isLogged = false;
         state.status = "idle";
       });
   },

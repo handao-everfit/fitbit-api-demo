@@ -1,6 +1,6 @@
 import React from "react";
 import { useDispatch } from "react-redux";
-import { login } from "../redux/user/userAsyncActions";
+import { login, revokeAccess } from "../redux/user/userAsyncActions";
 
 function LoginScreen() {
   const dispatch = useDispatch();
@@ -13,6 +13,7 @@ function LoginScreen() {
   return (
     <div>
       <button onClick={handleLogin}>Login to Fitbit</button>
+      {/* <button onClick={() => dispatch(revokeAccess())}>Revoke access</button> */}
     </div>
   );
 }

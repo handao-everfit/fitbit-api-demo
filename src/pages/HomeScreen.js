@@ -4,12 +4,14 @@ import { fetchData, login, revokeAccess } from "../redux/user/userAsyncActions";
 import HeartDataTable from "../components/HeartDataTable";
 import DataTable from "../components/DataTable";
 import { dataSelector } from "../redux/user/userSelector";
-import { Redirect, Route } from "react-router-dom";
+import { Redirect, Route, useHistory } from "react-router-dom";
 
-function HomeScreen() {
+function HomeScreen({ isLogged }) {
   const dispatch = useDispatch();
+  const history = useHistory();
 
-  const [heartData, sleepData, stepData, waterData] = useSelector(dataSelector);
+  const { heartData, sleepData, stepData, waterData } =
+    useSelector(dataSelector);
 
   useEffect(() => {
     // get the url
@@ -27,37 +29,12 @@ function HomeScreen() {
         userId,
       })
     );
-    console.log(heartData);
   }, []);
 
   function handleRevokeAccess(e) {
     e.preventDefault();
-    // get the url
-    var url = window.location.href;
-    console.log(window.location.href);
-    //getting the access token from url
-    var access_token = url.split("#")[1].split("=")[1].split("&")[0];
-    // dispatch(revokeAccess(access_token));
-    var p = "token=" + access_token;
-    var xhr = new XMLHttpRequest();
-    xhr.open("POST", "https://api.fitbit.com/oauth2/revoke");
-    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-    xhr.setRequestHeader(
-      "Authorization",
-      "Basic MjNCNzdZOjQ0ZWI1NWE5NzhjZWQ1NWI3MzdmYjY2MTNkYjk5ZTg4",
-      true
-    );
-    xhr.onload = function () {
-      if (xhr.status === 200) {
-        console.log(xhr.responseText);
-        // setHeartData(null);
-        // setSleepData(null);
-        // setStepData(null);
-        // setWaterData(null);
-      }
-    };
-    xhr.send(p);
-    return <Redirect to='/' />;
+    dispatch(revokeAccess());
+    history.push("/login");
   }
 
   return (
