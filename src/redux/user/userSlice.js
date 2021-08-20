@@ -17,6 +17,8 @@ export const userSlice = createSlice({
         state.status = "loading";
       })
       .addCase(fetchData.fulfilled, (state, action) => {
+        console.log("Data Payload ", action);
+        //action.payload is undefined
         if (action.payload) {
           state.data = action.payload;
         } else {
@@ -30,15 +32,15 @@ export const userSlice = createSlice({
         state.status = "loading";
       })
       .addCase(login.fulfilled, (state, action) => {
-        console.log("Payload", action.payload);
+        // console.log("Payload", action.payload);
 
-        if (action.payload) {
-          state.access_token = action.payload.access_token;
-          state.userId = action.payload.userId;
-          // console.log("hey " + state.access_token);
-        } else {
-          state.user = null;
-        }
+        // if (action.payload) {
+        //   state.access_token = action.payload.access_token;
+        //   state.userId = action.payload.userId;
+        //   // console.log("hey " + state.access_token);
+        // } else {
+        //   state.user = null;
+        // }
         state.status = "idle";
       });
 

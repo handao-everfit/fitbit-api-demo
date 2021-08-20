@@ -8,7 +8,7 @@ function redirect(url) {
     if (window.location.href.includes("access_token")) {
       resolve();
     } else {
-      reject("Something went wrong!");
+      reject("Something went wrong! redirecting");
     }
   });
 }
@@ -18,18 +18,19 @@ export const login = createAsyncThunk("login", async (payload, params) => {
   // const { username, password } = params;
   try {
     await redirect(
-      "https://www.fitbit.com/oauth2/authorize?response_type=token&client_id=23B77Y&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2F&scope=activity%20heartrate%20location%20nutrition%20profile%20settings%20sleep%20social%20weight&expires_in=604800"
+      "https://www.fitbit.com/oauth2/authorize?response_type=token&client_id=23B77Y&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fhome&scope=activity%20heartrate%20location%20nutrition%20profile%20settings%20sleep%20social%20weight&expires_in=604800"
     );
-    // get the url
-    var url = window.location.href;
-    console.log(window.location.href);
-    //getting the access token from url
-    var access_token = url.split("#")[1].split("=")[1].split("&")[0];
-    //get the userid
-    var userId = url.split("#")[1].split("=")[2].split("&")[0];
-    console.log("access token " + access_token);
-    console.log("userId: " + userId);
-    return { access_token, userId };
+    // // get the url
+    // var url = window.location.href;
+
+    // console.log(window.location.href);
+    // //getting the access token from url
+    // var access_token = url.split("#")[1].split("=")[1].split("&")[0];
+    // //get the userid
+    // var userId = url.split("#")[1].split("=")[2].split("&")[0];
+    // console.log("access token " + access_token);
+    // console.log("userId: " + userId);
+    return;
   } catch (error) {
     return error;
   }
@@ -41,71 +42,55 @@ export const fetchData = createAsyncThunk("fetchData", async (params) => {
   const headers = {
     Authorization: "Bearer " + access_token,
   };
-  axios
-    .get(
-      "https://api.fitbit.com/1/user/" +
-        userId +
-        "/activities/heart/date/today/1w.json",
-      { headers }
-    )
-    .then((response) => {
-      if (response.status === 200) {
-        const headers = {
-          Authorization: "Bearer " + access_token,
-        };
-        axios
-          .all([
-            axios.get(
-              "https://api.fitbit.com/1/user/" +
-                userId +
-                "/activities/heart/date/today/1d.json",
-              { headers }
-            ),
-            //GET https://api.fitbit.com/1.2/user/[user-id]/sleep/date/[date].json
-            axios.get(
-              "https://api.fitbit.com/1.2/user/" +
-                userId +
-                "/sleep/date/today.json",
-              { headers }
-            ),
-            //GET https://api.fitbit.com/1/user/-/activities/steps/date/today/1m.json
-            axios.get(
-              "https://api.fitbit.com/1/user/" +
-                userId +
-                "/activities/steps/date/today/1d.json",
-              { headers }
-            ),
+  try {
+    const response = await axios.all([
+      axios.get(
+        "https://api.fitbit.com/1/user/" +
+          userId +
+          "/activities/heart/date/today/1d.json",
+        { headers }
+      ),
+      //GET https://api.fitbit.com/1.2/user/[user-id]/sleep/date/[date].json
+      axios.get(
+        "https://api.fitbit.com/1.2/user/" + userId + "/sleep/date/today.json",
+        { headers }
+      ),
+      //GET https://api.fitbit.com/1/user/-/activities/steps/date/today/1m.json
+      axios.get(
+        "https://api.fitbit.com/1/user/" +
+          userId +
+          "/activities/steps/date/today/1d.json",
+        { headers }
+      ),
 
-            //GET https://api.fitbit.com/1/user/[user-id]/[resource-path]/date/[date]/[period].json
-            axios.get(
-              "https://api.fitbit.com/1/user/" +
-                userId +
-                "/foods/log/water/date/today/1d.json",
-              { headers }
-            ),
-          ])
-          .then(
-            axios.spread((heart, sleep, steps, water) => {
-              if (response.status === 200) {
-                return {
-                  heartData: Object.values(heart.data)[0],
-                  sleepData: sleep.data.summary,
-                  stepData: Object.entries(steps.data)[0][1][0],
-                  waterData: Object.entries(water.data)[0][1][0],
-                };
-                // setHeartData(Object.values(heart.data)[0]);
-                // setSleepData(sleep.data.summary);
-                // setStepData(Object.entries(steps.data)[0][1][0]);
-                // setWaterData(Object.entries(water.data)[0][1][0]);
-              }
-            })
-          )
+      //GET https://api.fitbit.com/1/user/[user-id]/[resource-path]/date/[date]/[period].json
+      axios.get(
+        "https://api.fitbit.com/1/user/" +
+          userId +
+          "/foods/log/water/date/today/1d.json",
+        { headers }
+      ),
+    ]);
+    // .then(
+    //   axios.spread((heart, sleep, steps, water) => {
+    //     console.log("Herar data:  ", Object.values(heart.data)[0]);
+    //     return {
+    //       heartData: Object.values(heart.data)[0],
+    //       sleepData: sleep.data.summary,
+    //       stepData: Object.entries(steps.data)[0][1][0],
+    //       waterData: Object.entries(water.data)[0][1][0],
 
-          .catch((error) => {
-            return error;
-          });
-      }
-    });
+    //       // setHeartData(Object.values(heart.data)[0]);
+    //       // setSleepData(sleep.data.summary);
+    //       // setStepData(Object.entries(steps.data)[0][1][0]);
+    //       // setWaterData(Object.entries(water.data)[0][1][0]);
+    //     };
+    //   })
+    // );
+    return response;
+  } catch (error) {
+    return error;
+  }
 });
 
 export const revokeAccess = createAsyncThunk("revokeAccess", async (params) => {
