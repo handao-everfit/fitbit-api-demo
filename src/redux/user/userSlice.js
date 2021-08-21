@@ -17,10 +17,15 @@ export const userSlice = createSlice({
         state.status = "loading";
       })
       .addCase(fetchData.fulfilled, (state, action) => {
-        console.log("Data Payload ", action);
-        //action.payload is undefined
         if (action.payload) {
-          state.data = action.payload;
+          console.log(action.payload);
+          const data = {
+            heartData: action.payload[0]["activities-heart"][0],
+            sleepData: action.payload[1].summary,
+            stepsData: action.payload[2]["activities-steps"][0],
+            waterData: action.payload[3]["foods-log-water"][0],
+          };
+          state.data = data;
         }
         state.status = "idle";
       });
@@ -34,16 +39,6 @@ export const userSlice = createSlice({
           state.isLogged = true;
         }
         state.status = "idle";
-
-        // console.log("Payload", action.payload);
-
-        // if (action.payload) {
-        //   state.access_token = action.payload.access_token;
-        //   state.userId = action.payload.userId;
-        //   // console.log("hey " + state.access_token);
-        // } else {
-        //   state.user = null;
-        // }
       });
 
     builder
@@ -51,8 +46,8 @@ export const userSlice = createSlice({
         state.status = "loading";
       })
       .addCase(revokeAccess.fulfilled, (state) => {
-        // console.log("response", action.payload);
         state.isLogged = false;
+        state.data = null;
         state.status = "idle";
       });
   },

@@ -91,7 +91,9 @@ export const fetchData = createAsyncThunk("fetchData", async (params) => {
     response.forEach((res) => {
       data.push(res.data);
     });
-    return data;
+    if (response.status === 200) {
+      return data;
+    }
   } catch (error) {
     return error;
   }

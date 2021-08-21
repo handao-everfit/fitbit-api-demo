@@ -22,7 +22,7 @@ export default function HeartDataTable({ data }) {
 
   return (
     <TableContainer component={Paper}>
-      <Table className={classes.table} aria-label='simple table'>
+      <Table className={classes.table} aria-label='simple table' rowKey='name'>
         <caption>Heart Rate Log</caption>
 
         <TableHead>

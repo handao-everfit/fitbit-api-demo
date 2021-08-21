@@ -1,16 +1,16 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchData, login, revokeAccess } from "../redux/user/userAsyncActions";
+import { fetchData, revokeAccess } from "../redux/user/userAsyncActions";
 import HeartDataTable from "../components/HeartDataTable";
 import DataTable from "../components/DataTable";
 import { dataSelector } from "../redux/user/userSelector";
-import { Redirect, Route, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
 function HomeScreen({ isLogged }) {
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const { heartData, sleepData, stepData, waterData } =
+  const { heartData, sleepData, stepsData, waterData } =
     useSelector(dataSelector);
 
   useEffect(() => {
@@ -29,6 +29,7 @@ function HomeScreen({ isLogged }) {
         userId,
       })
     );
+    console.table(heartData);
   }, []);
 
   function handleRevokeAccess(e) {
@@ -39,20 +40,17 @@ function HomeScreen({ isLogged }) {
 
   return (
     <div>
-      <h1>Data goes here</h1>
       <button onClick={handleRevokeAccess}>Revoke access</button>
 
-      {/* {heartData &&
-        heartData.map((item) => (
-          <div>
-            <h2>{item.dateTime}</h2>
-            <HeartDataTable data={item.value.heartRateZones} />
-          </div>
-        ))}
-
+      {heartData && (
+        <div>
+          <h2>{heartData.dateTime}</h2>
+          <HeartDataTable data={heartData.value["heartRateZones"]} />
+        </div>
+      )}
       {sleepData && <DataTable data={sleepData} name='Sleep' />}
-      {stepData && <DataTable data={stepData} name='Steps' />}
-      {waterData && <DataTable data={waterData} name='Water' />} */}
+      {stepsData && <DataTable data={stepsData} name='Steps' />}
+      {waterData && <DataTable data={waterData} name='Water' />}
     </div>
   );
 }

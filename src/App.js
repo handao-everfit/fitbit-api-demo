@@ -1,5 +1,3 @@
-import "./App.css";
-
 import {
   BrowserRouter as Router,
   Switch,
@@ -10,6 +8,7 @@ import { useSelector } from "react-redux";
 
 import LoginScreen from "./pages/LoginScreen";
 import HomeScreen from "./pages/HomeScreen";
+import "./App.css";
 
 import { isLoggedSelector } from "./redux/user/userSelector";
 
@@ -17,9 +16,9 @@ function App() {
   const isLogged = useSelector(isLoggedSelector);
 
   return (
-    <Router>
-      <Switch>
-        <div className='App'>
+    <div className='App'>
+      <Router>
+        <Switch>
           <Route
             exact
             path='/'
@@ -33,9 +32,9 @@ function App() {
             path='/home'
             component={() => <HomeScreen isLogged={isLogged} />}
           />
-        </div>
-      </Switch>
-    </Router>
+        </Switch>
+      </Router>
+    </div>
   );
 }
 
