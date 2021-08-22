@@ -1,49 +1,53 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { login, logout, register } from "./userAsyncActions";
+import { fetchData, login, revokeAccess } from "./userAsyncActions";
 
 export const userSlice = createSlice({
   name: "user",
   initialState: {
-    user: null,
+    isLogged: false,
     status: "idle",
+    userId: "",
+    access_token: "",
+    data: null,
   },
   reducers: {},
   extraReducers: (builder) => {
+    builder
+      .addCase(fetchData.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(fetchData.fulfilled, (state, action) => {
+        if (action.payload) {
+          console.log(action.payload);
+          const data = {
+            heartData: action.payload[0]["activities-heart"][0],
+            sleepData: action.payload[1].summary,
+            stepsData: action.payload[2]["activities-steps"][0],
+            waterData: action.payload[3]["foods-log-water"][0],
+          };
+          state.data = data;
+        }
+        state.status = "idle";
+      });
+
     builder
       .addCase(login.pending, (state) => {
         state.status = "loading";
       })
       .addCase(login.fulfilled, (state, action) => {
-        if (action.payload.length) {
-          state.user = action.payload[0];
-          state.user.isLogged = true;
-        } else {
-          state.user = null;
-        }
-        state.status = "idle";
-      });
-
-    builder
-      .addCase(register.pending, (state) => {
-        state.status = "loading";
-      })
-      .addCase(register.fulfilled, (state, action) => {
-        console.log("Payload", action);
         if (action.payload) {
-          state.user = action.payload;
-          state.user.isLogged = true;
-        } else {
-          state.user = null;
+          state.isLogged = true;
         }
         state.status = "idle";
       });
 
     builder
-      .addCase(logout.pending, (state) => {
+      .addCase(revokeAccess.pending, (state) => {
         state.status = "loading";
       })
-      .addCase(logout.fulfilled, (state, action) => {
-        state.user = action.payload;
+      .addCase(revokeAccess.fulfilled, (state) => {
+        state.isLogged = false;
+        state.data = null;
         state.status = "idle";
       });
   },
