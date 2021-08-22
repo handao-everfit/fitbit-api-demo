@@ -71,22 +71,7 @@ export const fetchData = createAsyncThunk("fetchData", async (params) => {
         { headers }
       ),
     ]);
-    // .then(
-    //   axios.spread((heart, sleep, steps, water) => {
-    //     console.log("Herar data:  ", Object.values(heart.data)[0]);
-    //     return {
-    //       heartData: Object.values(heart.data)[0],
-    //       sleepData: sleep.data.summary,
-    //       stepData: Object.entries(steps.data)[0][1][0],
-    //       waterData: Object.entries(water.data)[0][1][0],
 
-    //       // setHeartData(Object.values(heart.data)[0]);
-    //       // setSleepData(sleep.data.summary);
-    //       // setStepData(Object.entries(steps.data)[0][1][0]);
-    //       // setWaterData(Object.entries(water.data)[0][1][0]);
-    //     };
-    //   })
-    //
     let data = [];
     response.forEach((res) => {
       data.push(res.data);
@@ -108,17 +93,6 @@ export const revokeAccess = createAsyncThunk("revokeAccess", async (params) => {
     //getting the access token from url
     var access_token = url.split("#")[1].split("=")[1].split("&")[0];
     var p = "token=" + access_token;
-    // const headers = {
-    //   "Content-Type": "application/x-www-form-urlencoded",
-    //   Authorization:
-    //     "Basic MjNCNzdZOjQ0ZWI1NWE5NzhjZWQ1NWI3MzdmYjY2MTNkYjk5ZTg4",
-    // };
-
-    // const response = await axios.post("https://api.fitbit.com/oauth2/revoke", {
-    //   ...p,
-    //   headers: headers,
-    // });
-    // return response.status;
 
     var xhr = new XMLHttpRequest();
     xhr.open("POST", "https://api.fitbit.com/oauth2/revoke");
@@ -129,12 +103,9 @@ export const revokeAccess = createAsyncThunk("revokeAccess", async (params) => {
       true
     );
     xhr.onload = function () {
-      if (xhr.status === 200) {
+      if (!(xhr.status === 200)) {
         console.log(xhr.responseText);
-        // setHeartData(null);
-        // setSleepData(null);
-        // setStepData(null);
-        // setWaterData(null);
+        return;
       }
     };
     xhr.send(p);
