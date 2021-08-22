@@ -91,9 +91,11 @@ export const fetchData = createAsyncThunk("fetchData", async (params) => {
     response.forEach((res) => {
       data.push(res.data);
     });
-    if (response.status === 200) {
-      return data;
+    if (response.status === 429) {
+      alert("Too many requests. Please wait.");
+      return;
     }
+    return data;
   } catch (error) {
     return error;
   }

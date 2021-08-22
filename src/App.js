@@ -16,20 +16,20 @@ function App() {
   const isLogged = useSelector(isLoggedSelector);
 
   return (
-    <div className='App'>
+    <div className="App">
       <Router>
         <Switch>
           <Route
             exact
-            path='/'
+            path="/"
             render={() =>
-              isLogged ? <Redirect to='/home' /> : <Redirect to='/login' />
+              isLogged ? <Redirect to="/home" /> : <Redirect to="/login" />
             }
           />
-          <Route exact path='/login' component={LoginScreen} />
+          <Route exact path="/login" component={LoginScreen} />
           <Route
             exact
-            path='/home'
+            path="/home"
             component={() => <HomeScreen isLogged={isLogged} />}
           />
         </Switch>

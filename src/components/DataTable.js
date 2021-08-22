@@ -22,7 +22,7 @@ export default function DataTable({ data, name }) {
 
   return (
     <TableContainer component={Paper}>
-      <Table className={classes.table} aria-label='simple table'>
+      <Table className={classes.table} aria-label="simple table">
         <caption>{name} Log</caption>
         <TableHead>
           <TableRow>
@@ -33,7 +33,7 @@ export default function DataTable({ data, name }) {
         <TableBody>
           {Object.entries(data).map((entry) => (
             <TableRow key={entry[0]}>
-              <TableCell component='th' scope='row'>
+              <TableCell component="th" scope="row">
                 {entry[0]}
               </TableCell>
 

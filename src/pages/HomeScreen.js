@@ -29,7 +29,6 @@ function HomeScreen({ isLogged }) {
         userId,
       })
     );
-    console.table(heartData);
   }, []);
 
   function handleRevokeAccess(e) {
@@ -48,9 +47,9 @@ function HomeScreen({ isLogged }) {
           <HeartDataTable data={heartData.value["heartRateZones"]} />
         </div>
       )}
-      {sleepData && <DataTable data={sleepData} name='Sleep' />}
-      {stepsData && <DataTable data={stepsData} name='Steps' />}
-      {waterData && <DataTable data={waterData} name='Water' />}
+      {sleepData && <DataTable data={sleepData} name="Sleep" />}
+      {stepsData && <DataTable data={stepsData} name="Steps" />}
+      {waterData && <DataTable data={waterData} name="Water" />}
     </div>
   );
 }

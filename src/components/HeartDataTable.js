@@ -22,7 +22,7 @@ export default function HeartDataTable({ data }) {
 
   return (
     <TableContainer component={Paper}>
-      <Table className={classes.table} aria-label='simple table' rowKey='name'>
+      <Table className={classes.table} aria-label="simple table" rowKey="name">
         <caption>Heart Rate Log</caption>
 
         <TableHead>
@@ -31,32 +31,32 @@ export default function HeartDataTable({ data }) {
             {data &&
               data.map((item) => (
                 <>
-                  <TableCell align='right'>{item.name}</TableCell>
+                  <TableCell align="right">{item.name}</TableCell>
                 </>
               ))}
           </TableRow>
         </TableHead>
         <TableBody>
-          <TableRow key='max'>
-            <TableCell component='th' scope='row'>
+          <TableRow key="max">
+            <TableCell component="th" scope="row">
               max
             </TableCell>
             {data &&
               data.map((item) => (
                 <>
-                  <TableCell align='right'>{item.max}</TableCell>
+                  <TableCell align="right">{item.max}</TableCell>
                 </>
               ))}
           </TableRow>
 
-          <TableRow key='min'>
-            <TableCell component='th' scope='row'>
+          <TableRow key="min">
+            <TableCell component="th" scope="row">
               min
             </TableCell>
             {data &&
               data.map((item) => (
                 <>
-                  <TableCell align='right'>{item.min}</TableCell>
+                  <TableCell align="right">{item.min}</TableCell>
                 </>
               ))}
           </TableRow>
