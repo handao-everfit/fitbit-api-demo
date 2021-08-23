@@ -1,4 +1,4 @@
-# Redux Demo Project
+# Fitbit API Demo Project
 
 ## Requirement tech stacks
 
